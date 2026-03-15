@@ -7,10 +7,10 @@ import certifi
 ca = certifi.where()
 
 # MongoDB Connection Details
-MONGO_URI = os.getenv("MONGO_URI", "mongodb+srv://vinuprasaath:STRZVSycY8wHpMdv@vinuprojectdb.j0l81cu.mongodb.net/?appName=vinuprojectDB")
+MONGO_URI = os.getenv("MONGO_URI", "mongodb+srv://vinuprasaath:STRZVSycY8wHpMdv@vinuprojectdb.j0l81cu.mongodb.net/smart_complaint_db?retryWrites=true&w=majority&appName=vinuprojectDB")
 DB_NAME = "smart_complaint_db"
 
-client = MongoClient(MONGO_URI, tlsCAFile=ca)
+client = MongoClient(MONGO_URI, tlsCAFile=ca, retryWrites=True, tls=True, tlsAllowInvalidCertificates=True)
 db = client[DB_NAME]
 
 def get_hashed_password(plain_text_password):
