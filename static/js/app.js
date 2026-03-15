@@ -98,6 +98,8 @@ const switchView = (view) => {
 const initApp = () => {
     const userString = localStorage.getItem('vinu_user');
     if (!userString) {
+        $('landing-page').style.display = 'block';
+        $('auth-page').style.display = 'none';
         $('main-app').style.display = 'none';
         hideLoader();
         return;
@@ -409,5 +411,10 @@ document.querySelectorAll('.register-trigger').forEach(btn => {
         switchAuthTab('register');
     };
 });
+
+$('back-to-landing').onclick = () => {
+    $('auth-page').style.display = 'none';
+    $('landing-page').style.display = 'block';
+};
 
 window.onload = initApp;
