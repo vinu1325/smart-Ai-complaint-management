@@ -160,8 +160,14 @@ def create_complaint(current_user):
     
     res = db.complaints.insert_one(complaint)
     
+    # Notify User (Confirmation)
+    create_notification(current_user['_id'], "Complaint Filed", f"Successfully submitted: {title}")
+    
     # Notify Dept Officers
-    create_notification(None, "New Complaint", f"New {category} complaint: {title}", role='officer', dept=category)
+    create_notification(None, "New Dept Complaint", f"New {category} complaint: {title}", role='officer', dept=category)
+    
+    # Notify Admin (Global)
+    create_notification(None, "New System Complaint", f"New complaint filed in {category} by {current_user['name']}", role='admin')
     
     return jsonify({"message": "Complaint filed successfully", "id": str(res.inserted_id)}), 201
 
@@ -204,21 +210,35 @@ def update_status(current_user, id):
     comp = db.complaints.find_one({"_id": ObjectId(id)})
     create_notification(comp['user_id'], "Status Updated", f"Your complaint '{comp['title']}' is now {new_status}")
     
+    # Notify Admin
+    create_notification(None, "Status Changed", f"Complaint '{comp['title']}' updated to {new_status} by {current_user['name']}", role='admin')
+    
     return jsonify({"message": "Status updated"})
 
 @app.route('/notifications', methods=['GET'])
 @token_required
 def get_notifications(current_user):
-    # Fetch notifications relevant to user
-    query = {
-        "$or": [
-            {"user_id": str(current_user['_id'])},
-            {"role": current_user['role'], "dept": current_user.get('dept')},
-            {"role": current_user['role']} if current_user['role'] == 'admin' else {}
-        ]
-    }
+    # Fetch notifications strictly relevant to user role/dept
+    role = current_user['role']
+    notif_query = {"user_id": str(current_user['_id'])} # Personal notifications
     
-    # MongoDB handles $or natively
+    if role == 'officer':
+        query = {
+            "$or": [
+                notif_query,
+                {"role": "officer", "dept": current_user.get('dept')}
+            ]
+        }
+    elif role == 'admin':
+        query = {
+            "$or": [
+                notif_query,
+                {"role": "admin"}
+            ]
+        }
+    else: # Normal user
+        query = notif_query
+    
     user_n = list(db.notifications.find(query).sort("created_at", -1).limit(10))
     
     for n in user_n: 
