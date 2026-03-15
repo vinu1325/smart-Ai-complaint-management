@@ -9,8 +9,15 @@ const $ = (id) => document.getElementById(id);
 const hideLoader = () => $('loading').classList.remove('active');
 const showLoader = () => $('loading').classList.add('active');
 
-const formatRemainingTime = (deadline, status) => {
-    if (status === 'Resolved') return `<span class="badge resolved">Finished</span>`;
+const formatRemainingTime = (deadline, status, createdAt, updatedAt) => {
+    if (status === 'Resolved') {
+        const start = new Date(createdAt);
+        const end = new Date(updatedAt || new Date());
+        const diffMs = end - start;
+        const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
+        const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+        return `<span class="badge low">Fixed in ${diffHrs}h ${diffMins}m</span>`;
+    }
     
     const now = new Date();
     const target = new Date(deadline);
@@ -147,7 +154,7 @@ const loadDashboardData = async () => {
                 <td>${c.title}</td>
                 <td>${c.category}</td>
                 <td><span class="badge ${c.priority.toLowerCase()}">${c.priority}</span></td>
-                <td>${formatRemainingTime(c.deadline, c.status)}</td>
+                <td>${formatRemainingTime(c.deadline, c.status, c.created_at, c.updated_at)}</td>
                 <td><span class="status-${c.status.toLowerCase().replace(' ', '-')}">${c.status}</span></td>
                 <td>${actionHtml}</td>
             </tr>

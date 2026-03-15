@@ -5,3 +5,4 @@ pyjwt
 numpy
 scikit-learn
 gunicorn
+pymongo

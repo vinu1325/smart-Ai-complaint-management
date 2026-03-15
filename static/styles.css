@@ -65,6 +65,7 @@ h1, h2, h3 { font-family: 'Outfit', sans-serif; }
     margin-bottom: 0.5rem;
     background: linear-gradient(to right, #fff, var(--primary));
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
@@ -129,18 +130,36 @@ h1, h2, h3 { font-family: 'Outfit', sans-serif; }
 .btn-primary {
     width: 100%;
     padding: 1rem;
-    background: var(--primary);
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
     border: none;
     border-radius: 12px;
     color: white;
     font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
     cursor: pointer;
-    transition: 0.3s;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: 0.5s;
+}
+
+.btn-primary:hover::before {
+    left: 100%;
 }
 
 .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px var(--primary-glow);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px var(--primary-glow);
+    filter: brightness(1.1);
 }
 
 /* Layout */

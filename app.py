@@ -6,7 +6,7 @@ import datetime
 import bcrypt
 import jwt
 import os
-# from bson import ObjectId
+from bson import ObjectId
 
 app = Flask(__name__, static_folder='static')
 CORS(app)
@@ -15,6 +15,7 @@ UPLOAD_FOLDER = 'uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 db = get_db()
+init_db() # Ensure DB is seeded on start
 
 # --- Utils ---
 def create_notification(user_id, title, message, role=None, dept=None):
@@ -37,7 +38,7 @@ def token_required(f):
             return jsonify({'message': 'Token is missing!'}), 401
         try:
             data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=["HS256"])
-            current_user = db.users.find_one({"_id": data['id']})
+            current_user = db.users.find_one({"_id": ObjectId(data['id'])})
         except:
             return jsonify({'message': 'Token is invalid!'}), 401
         return f(current_user, *args, **kwargs)
@@ -85,7 +86,12 @@ def login():
     user = db.users.find_one({"email": data['email']})
     if user:
         print("User found, checking password...")
-        if bcrypt.checkpw(data['password'].encode('utf-8'), user['password']):
+        # Ensure password is bytes for bcrypt
+        pw = user['password']
+        if isinstance(pw, str):
+            pw = pw.encode('utf-8')
+            
+        if bcrypt.checkpw(data['password'].encode('utf-8'), pw):
             print("Password match!")
             token = jwt.encode({
                 'id': str(user['_id']),
@@ -96,7 +102,6 @@ def login():
                 token = token.decode('utf-8')
                 
             return jsonify({
-                "token": token,
                 "token": token,
                 "role": user['role'],
                 "name": user['name'],
@@ -166,7 +171,7 @@ def mark_viewed(current_user, id):
     if current_user['role'] not in ['officer', 'admin']:
         return jsonify({"message": "Unauthorized"}), 403
     
-    db.complaints.update_one({"_id": id}, {"$set": {"viewed_by_officer": True}})
+    db.complaints.update_one({"_id": ObjectId(id)}, {"$set": {"viewed_by_officer": True}})
     return jsonify({"message": "Marked as viewed"})
 
 @app.route('/complaints', methods=['GET'])
@@ -193,10 +198,10 @@ def update_status(current_user, id):
         return jsonify({"message": "Unauthorized"}), 403
     
     new_status = request.json.get('status')
-    db.complaints.update_one({"_id": id}, {"$set": {"status": new_status, "updated_at": datetime.datetime.now()}})
+    db.complaints.update_one({"_id": ObjectId(id)}, {"$set": {"status": new_status, "updated_at": datetime.datetime.now()}})
     
     # Notify User
-    comp = db.complaints.find_one({"_id": id})
+    comp = db.complaints.find_one({"_id": ObjectId(id)})
     create_notification(comp['user_id'], "Status Updated", f"Your complaint '{comp['title']}' is now {new_status}")
     
     return jsonify({"message": "Status updated"})
@@ -212,31 +217,25 @@ def get_notifications(current_user):
             {"role": current_user['role']} if current_user['role'] == 'admin' else {}
         ]
     }
-    # (Mock DB handle $or very loosely or manually)
-    all_n = list(db.notifications.find({}))
-    user_n = []
-    for n in all_n:
-        if n.get('user_id') == str(current_user['_id']):
-            user_n.append(n)
-        elif n.get('role') == current_user['role']:
-            if current_user['role'] == 'admin' or n.get('dept') == current_user.get('dept'):
-                user_n.append(n)
     
-    # Sort and take latest 10
-    user_n.sort(key=lambda x: x['created_at'], reverse=True)
+    # MongoDB handles $or natively
+    user_n = list(db.notifications.find(query).sort("created_at", -1).limit(10))
+    
     for n in user_n: 
         if '_id' in n: n['_id'] = str(n['_id'])
-    return jsonify(user_n[:10])
+        if 'user_id' in n: n['user_id'] = str(n['user_id'])
+    return jsonify(user_n)
 
 @app.route('/notifications/read', methods=['POST'])
 @token_required
 def mark_read(current_user):
-    # Simplification: mark all as read for this user/role
-    all_n = list(db.notifications.find({}))
-    for n in all_n:
-        if n.get('user_id') == str(current_user['_id']) or (n.get('role') == current_user['role'] and n.get('dept') == current_user.get('dept')):
-            n['read'] = True
-    db.save()
+    query = {
+        "$or": [
+            {"user_id": str(current_user['_id'])},
+            {"role": current_user['role'], "dept": current_user.get('dept')}
+        ]
+    }
+    db.notifications.update_many(query, {"$set": {"read": True}})
     return jsonify({"message": "All marked as read"})
 
 @app.route('/stats', methods=['GET'])
@@ -262,7 +261,6 @@ def get_stats(current_user):
         res_times = []
         for c in cat_resolved:
             if 'updated_at' in c and 'created_at' in c:
-                # Handle cases where created_at might be string or datetime
                 c_at = c['created_at']
                 u_at = c['updated_at']
                 if isinstance(c_at, str): c_at = datetime.datetime.fromisoformat(c_at)
