@@ -98,13 +98,13 @@ const switchView = (view) => {
 const initApp = () => {
     const userString = localStorage.getItem('vinu_user');
     if (!userString) {
-        $('auth-page').style.display = 'flex';
         $('main-app').style.display = 'none';
         hideLoader();
         return;
     }
     
     currentUser = JSON.parse(userString);
+    $('landing-page').style.display = 'none';
     $('auth-page').style.display = 'none';
     $('main-app').style.display = 'flex';
     $('user-display-name').innerText = currentUser.name;
@@ -392,5 +392,22 @@ document.querySelectorAll('.nav-links li[data-view]').forEach(li => {
 $('role-field').querySelector('select').onchange = (e) => {
     $('dept-field').style.display = e.target.value === 'officer' ? 'flex' : 'none';
 };
+
+// Landing page triggers
+document.querySelectorAll('.login-trigger').forEach(btn => {
+    btn.onclick = () => {
+        $('landing-page').style.display = 'none';
+        $('auth-page').style.display = 'flex';
+        switchAuthTab('login');
+    };
+});
+
+document.querySelectorAll('.register-trigger').forEach(btn => {
+    btn.onclick = () => {
+        $('landing-page').style.display = 'none';
+        $('auth-page').style.display = 'flex';
+        switchAuthTab('register');
+    };
+});
 
 window.onload = initApp;
