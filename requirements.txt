@@ -4,3 +4,4 @@ bcrypt
 pyjwt
 numpy
 scikit-learn
+gunicorn
