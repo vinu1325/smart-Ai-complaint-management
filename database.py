@@ -2,12 +2,15 @@ import bcrypt
 import os
 import datetime
 from pymongo import MongoClient
+import certifi
+
+ca = certifi.where()
 
 # MongoDB Connection Details
 MONGO_URI = os.getenv("MONGO_URI", "mongodb+srv://vinuprasaath:STRZVSycY8wHpMdv@vinuprojectdb.j0l81cu.mongodb.net/?appName=vinuprojectDB")
 DB_NAME = "smart_complaint_db"
 
-client = MongoClient(MONGO_URI)
+client = MongoClient(MONGO_URI, tlsCAFile=ca)
 db = client[DB_NAME]
 
 def get_hashed_password(plain_text_password):
