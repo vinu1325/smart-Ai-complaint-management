@@ -1,0 +1,8 @@
+venv/
+__pycache__/
+*.pyc
+db.json
+uploads/
+.gemini/
+*.zip
+verify_stats.py

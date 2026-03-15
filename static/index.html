@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vinu Complaints | Smart AI Portal</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="dark-theme">
+    <div id="loading" class="loader-overlay active">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Auth Container -->
+    <div id="auth-page" class="page">
+        <div class="glass-card login-card">
+            <h1 class="glow-text">Smart Complaint AI</h1>
+            <p class="subtitle">Efficient. Automatic. Intelligent.</p>
+            
+            <div class="auth-tabs">
+                <button id="tab-login" class="active">Login</button>
+                <button id="tab-register">Register</button>
+            </div>
+
+            <form id="auth-form">
+                <div class="input-group" id="name-field" style="display: none;">
+                    <i class="fas fa-user"></i>
+                    <input type="text" placeholder="Full Name" name="name">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" placeholder="Email Address" name="email" required>
+                </div>
+                <div class="input-group" id="phone-field" style="display: none;">
+                    <i class="fas fa-phone"></i>
+                    <input type="text" placeholder="Phone Number" name="phone">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" placeholder="Password" name="password" required>
+                </div>
+                <div class="input-group" id="role-field" style="display: none;">
+                    <i class="fas fa-user-tag"></i>
+                    <select name="role">
+                        <option value="user">Resident (User)</option>
+                        <option value="officer">Dept Officer</option>
+                        <option value="admin">High Authority (Admin)</option>
+                    </select>
+                </div>
+                <div class="input-group" id="dept-field" style="display: none;">
+                    <i class="fas fa-building"></i>
+                    <select name="dept">
+                        <option value="Electricity">Electricity</option>
+                        <option value="Water">Water</option>
+                        <option value="Roads">Roads</option>
+                        <option value="Sanitation">Sanitation</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary" id="auth-btn">Sign In</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main App Container (Dashboards) -->
+    <div id="main-app" class="page" style="display: none;">
+        <nav class="sidebar">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>SmartPortal</span>
+            </div>
+            <ul class="nav-links">
+                <li class="active" data-view="dashboard"><i class="fas fa-th-large"></i> Dashboard</li>
+                <li data-view="new-complaint" class="user-only"><i class="fas fa-plus-circle"></i> New Complaint</li>
+                <li data-view="all-complaints"><i class="fas fa-list"></i> Complaints</li>
+                <li data-view="analytics" class="admin-only"><i class="fas fa-chart-pie"></i> Analytics</li>
+                <li id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</li>
+            </ul>
+        </nav>
+
+        <main class="content">
+            <header class="top-bar">
+                <h2 id="view-title">Dashboard</h2>
+                <div class="header-right">
+                    <div class="notification-wrapper">
+                        <i class="fas fa-bell" id="notif-bell"></i>
+                        <span class="notif-badge" id="notif-count">0</span>
+                        <div class="notif-dropdown" id="notif-dropdown">
+                            <h4>Notifications</h4>
+                            <div id="notif-list">
+                                <!-- Loads items -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="user-info">
+                        <span id="user-display-name">Sarvesh</span>
+                        <div class="avatar">S</div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- User View: My Dashboard -->
+            <section id="view-dashboard" class="content-view">
+                <div class="stats-row">
+                    <div class="glass-card stat-card">
+                        <h3>Total Reports</h3>
+                        <p class="stat-num" id="stat-total">0</p>
+                    </div>
+                    <div class="glass-card stat-card pending">
+                        <h3>In Progress</h3>
+                        <p class="stat-num" id="stat-pending">0</p>
+                    </div>
+                    <div class="glass-card stat-card resolved">
+                        <h3>Resolved</h3>
+                        <p class="stat-num" id="stat-resolved">0</p>
+                    </div>
+                </div>
+                
+                <div class="table-container glass-card">
+                    <h3>Recent Feedback</h3>
+                    <table id="complaints-table">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Priority</th>
+                                <th>SLA Countdown</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Loaded via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- User View: New Complaint -->
+            <section id="view-new-complaint" class="content-view" style="display: none;">
+                <div class="glass-card form-card">
+                    <h3>Lodge New Complaint</h3>
+                    <form id="complaint-form">
+                        <div class="form-grid">
+                            <div class="input-group full">
+                                <label>Complaint Title</label>
+                                <input type="text" name="title" placeholder="Short summary..." required>
+                            </div>
+                            <div class="input-group">
+                                <label>Location</label>
+                                <input type="text" name="location" placeholder="Street Name / Area..." required>
+                            </div>
+                            <div class="input-group">
+                                <label>Attachment</label>
+                                <input type="file" name="image" accept="image/*">
+                            </div>
+                            <div class="input-group full">
+                                <label>Description (AI will auto-categorize this)</label>
+                                <textarea name="description" rows="5" placeholder="Detailed explanation of the issue..." required></textarea>
+                            </div>
+                        </div>
+                        <div id="ai-prediction" class="ai-box" style="display: none;">
+                            <i class="fas fa-robot"></i>
+                            <span>AI Analysis: <b id="ai-cat">Electricity</b> | Priority: <b id="ai-pri">High</b></span>
+                        </div>
+                        <button type="submit" class="btn-primary">Submit To AI Engine</button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Admin View: Analytics -->
+            <section id="view-analytics" class="content-view" style="display: none;">
+                <div class="stats-row admin-only">
+                    <div class="glass-card stat-card">
+                        <h3>Overall SLA</h3>
+                        <p class="stat-num" id="stat-sla">0%</p>
+                    </div>
+                </div>
+                <div class="chart-grid">
+                    <div class="glass-card chart-box">
+                        <h3>Report Volume (Last 7 Days)</h3>
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                    <div class="glass-card chart-box">
+                        <h3>Category Resolution Rates</h3>
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                    <div class="glass-card chart-box full-width">
+                        <h3>Category Performance (Avg Resolution Time)</h3>
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </div>
+                <div class="glass-card analysis-box">
+                    <h3><i class="fas fa-brain"></i> AI Strategic Insights</h3>
+                    <div id="ai-insights-list">
+                        <!-- Loaded via JS -->
+                    </div>
+                </div>
+                <div id="escalation-alerts" class="alerts-container">
+                    <!-- High Authority Alerts -->
+                </div>
+            </section>
+
+            <!-- Detailed View Modal -->
+            <div id="complaint-modal" class="modal">
+                <div class="glass-card modal-content">
+                    <span class="close">&times;</span>
+                    <h2 id="modal-title">Complaint Details</h2>
+                    <div class="modal-body">
+                        <img id="modal-img" src="" alt="Complaint Image" style="max-height: 200px; display: none;">
+                        <p><strong>Description:</strong> <span id="modal-desc"></span></p>
+                        <p><strong>Location:</strong> <span id="modal-loc"></span></p>
+                        <p><strong>SLA Deadline:</strong> <span id="modal-deadline"></span></p>
+                        <div class="officer-actions" style="display: none;">
+                            <label>Update Status:</label>
+                            <select id="update-status-val">
+                                <option value="Pending">Pending</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Resolved">Resolved</option>
+                            </select>
+                            <button id="save-status-btn" class="btn-primary btn-small">Update</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
