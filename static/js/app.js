@@ -136,17 +136,21 @@ const loadDashboardData = async () => {
         
         const tbody = document.querySelector('#complaints-table tbody');
         tbody.innerHTML = complaints.map((c, i) => {
-            const isOfficer = currentUser.role === 'officer' || currentUser.role === 'admin';
-            const actionHtml = isOfficer 
-                ? `<select class="inline-select" onchange="updateStatus('${c._id}', this.value)">
+            let actionHtml = '';
+            if (currentUser.role === 'admin') {
+                actionHtml = `<div class="badge-received"><i class="fas fa-satellite-dish"></i> Complaint Received</div>`;
+            } else if (currentUser.role === 'officer') {
+                actionHtml = `<select class="inline-select" onchange="updateStatus('${c._id}', this.value)">
                     <option value="Pending" ${c.status === 'Pending' ? 'selected' : ''}>Pending</option>
                     <option value="In Progress" ${c.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
                     <option value="Resolved" ${c.status === 'Resolved' ? 'selected' : ''}>Resolved</option>
-                   </select>`
-                : `<div class="user-action-cell">
+                   </select>`;
+            } else {
+                actionHtml = `<div class="user-action-cell">
                     <button class="btn-small" onclick="viewDetails('${c._id}')">Complaint Submitted</button>
                     ${c.viewed_by_officer ? '<span class="viewed-tag"><i class="fas fa-check-double"></i> Viewed</span>' : ''}
                    </div>`;
+            }
 
             return `
             <tr>
