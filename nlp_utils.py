@@ -5,16 +5,16 @@ import datetime
 
 # Simple category mapping for simulation
 CATEGORY_KEYWORDS = {
-    "Electricity": ["light", "street light", "currentcut", "power", "current", "wire", "shock", "voltage", "meter", "eb", "transformer", "fuse", "blackout"],
-    "Water": ["overflow", "pipelineclot", "no water", "tap issue", "leak", "pipe", "drinking", "tanker", "contamination", "low pressure"],
-    "Roads": ["way damage", "road", "pothole", "tar", "speed", "breaker", "accident", "path", "bridge", "street", "crack", "block", "divider"],
-    "Sanitation": ["septitank", "overflow", "smell", "drainage overflow", "septitank smell", "garbage", "waste", "trash", "cleaning", "bins", "stinking", "litter", "dump", "sweep", "drain", "stagnant"]
+    "Electricity": ["light", "street light", "currentcut", "power", "current", "wire", "shock", "voltage", "meter", "eb", "transformer", "fuse", "blackout", "மின்சாரம்", "விளக்கு", "தெருவிளக்கு", "மின்வெட்டு", "ஒளி", "மின் கம்பி"],
+    "Water": ["overflow", "pipelineclot", "no water", "tap issue", "leak", "pipe", "drinking", "tanker", "contamination", "low pressure", "தண்ணீர்", "நீர்", "குழாய்", "கசிவு", "தண்ணீர் இல்லை", "தேக்கம்"],
+    "Roads": ["way damage", "road", "pothole", "tar", "speed", "breaker", "accident", "path", "bridge", "street", "crack", "block", "divider", "சாலை", "பாதை", "குழி", "தார் சாலை", "தெரு", "பாலம்"],
+    "Sanitation": ["septitank", "overflow", "smell", "drainage overflow", "septitank smell", "garbage", "waste", "trash", "cleaning", "bins", "stinking", "litter", "dump", "sweep", "drain", "stagnant", "சாக்கடை", "குப்பை", "சுத்தம்", "நாற்றம்", "கழிவு"]
 }
 
 PRIORITY_KEYWORDS = {
-    "High": ["danger", "leakage", "fire", "overflow", "urgent", "emergency", "critical"],
-    "Medium": ["damage", "broken", "pothole", "stuck", "problem"],
-    "Low": ["slow", "delay", "request", "minor", "suggestion", "feedback"]
+    "High": ["danger", "fire", "urgent", "emergency", "critical", "ஆபத்து", "தீ", "அவசரம்", "உடனடி"],
+    "Medium": ["damage", "broken", "pothole", "stuck", "problem", "சேதம்", "உடைப்பு", "பிரச்சனை"],
+    "Low": ["slow", "delay", "request", "minor", "suggestion", "feedback", "மெதுவான", "கோரிக்கை", "கருத்து"]
 }
 
 def classify_complaint(description):

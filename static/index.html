@@ -30,8 +30,12 @@
                 <span>Xsome Complaint System</span>
             </div>
             <div class="landing-nav">
-                <button class="btn-text login-trigger"><i class="fas fa-user"></i> Login</button>
-                <button class="btn-primary register-trigger" style="width: auto; padding: 0.6rem 1.5rem;">Join Now</button>
+                <div class="lang-switch">
+                    <button class="btn-lang active" onclick="changeLanguage('en')">EN</button>
+                    <button class="btn-lang" onclick="changeLanguage('ta')">TA</button>
+                </div>
+                <button class="btn-text login-trigger" data-i18n="login"><i class="fas fa-user"></i> Login</button>
+                <button class="btn-primary register-trigger" style="width: auto; padding: 0.6rem 1.5rem;" data-i18n="join_now">Join Now</button>
             </div>
         </header>
 
@@ -40,13 +44,13 @@
                 <i class="fas fa-circle" style="font-size: 8px; color: #10b981;"></i>
                 Real-Time AI System Active
             </div>
-            <h1 class="glow-text">Citizen Empowerment <br> Through AI</h1>
-            <p>Submit complaints, track resolutions in real-time, and let our AI handle classification, prioritization, and routing — instantly.</p>
+            <h1 class="glow-text" data-i18n="hero_title">Citizen Empowerment <br> Through AI</h1>
+            <p data-i18n="hero_subtitle">Submit complaints, track resolutions in real-time, and let our AI handle classification, prioritization, and routing — instantly.</p>
             <div class="hero-btns">
-                <button class="btn-primary register-trigger" style="width: auto; padding: 1rem 2.5rem;">
+                <button class="btn-primary register-trigger" style="width: auto; padding: 1rem 2.5rem;" data-i18n="file_complaint">
                     <i class="fas fa-bolt"></i> File a Complaint
                 </button>
-                <button class="btn-secondary login-trigger">
+                <button class="btn-secondary login-trigger" data-i18n="login">
                     <i class="fas fa-sign-in-alt"></i> Login
                 </button>
             </div>
@@ -166,6 +170,10 @@
             <header class="top-bar">
                 <h2 id="view-title">Dashboard</h2>
                 <div class="header-right">
+                    <div class="lang-switch" style="margin-right: 1rem;">
+                        <button class="btn-lang active" onclick="changeLanguage('en')">EN</button>
+                        <button class="btn-lang" onclick="changeLanguage('ta')">TA</button>
+                    </div>
                     <div class="notification-wrapper">
                         <i class="fas fa-bell" id="notif-bell"></i>
                         <span class="notif-badge" id="notif-count">0</span>
@@ -224,31 +232,31 @@
             <!-- User View: New Complaint -->
             <section id="view-new-complaint" class="content-view" style="display: none;">
                 <div class="glass-card form-card">
-                    <h3>Lodge New Complaint</h3>
+                    <h3 data-i18n="lodge_complaint">Lodge New Complaint</h3>
                     <form id="complaint-form">
                         <div class="form-grid">
                             <div class="input-group full">
-                                <label>Complaint Title</label>
-                                <input type="text" name="title" placeholder="Short summary..." required>
+                                <label data-i18n="comp_title">Complaint Title</label>
+                                <input type="text" name="title" placeholder="Short summary..." required data-i18n-placeholder="placeholder_summary">
                             </div>
                             <div class="input-group">
-                                <label>Location</label>
-                                <input type="text" name="location" placeholder="Street Name / Area..." required>
+                                <label data-i18n="location">Location</label>
+                                <input type="text" name="location" placeholder="Street Name / Area..." required data-i18n-placeholder="placeholder_location">
                             </div>
                             <div class="input-group">
-                                <label>Attachment</label>
+                                <label data-i18n="attachment">Attachment</label>
                                 <input type="file" name="image" accept="image/*">
                             </div>
                             <div class="input-group full">
-                                <label>Description (AI will auto-categorize this)</label>
-                                <textarea name="description" rows="5" placeholder="Detailed explanation of the issue..." required></textarea>
+                                <label data-i18n="comp_desc">Description (AI will auto-categorize this)</label>
+                                <textarea name="description" rows="5" placeholder="Detailed explanation of the issue..." required data-i18n-placeholder="placeholder_desc"></textarea>
                             </div>
                         </div>
                         <div id="ai-prediction" class="ai-box" style="display: none;">
                             <i class="fas fa-robot"></i>
                             <span>AI Analysis: <b id="ai-cat">Electricity</b> | Priority: <b id="ai-pri">High</b></span>
                         </div>
-                        <button type="submit" class="btn-primary">Submit To AI Engine</button>
+                        <button type="submit" class="btn-primary" data-i18n="btn_submit">Submit To AI Engine</button>
                     </form>
                 </div>
             </section>

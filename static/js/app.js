@@ -3,6 +3,69 @@ const API_URL = window.location.hostname === 'localhost' || window.location.host
     : window.location.origin;
 let currentUser = null;
 let currentView = 'dashboard';
+let currentLang = localStorage.getItem('vinu_lang') || 'en';
+
+const translations = {
+    en: {
+        login: "Login",
+        join_now: "Join Now",
+        hero_title: "Citizen Empowerment Through AI",
+        hero_subtitle: "Submit complaints, track resolutions in real-time, and let our AI handle classification, prioritization, and routing — instantly.",
+        file_complaint: "File a Complaint",
+        lodge_complaint: "Lodge New Complaint",
+        comp_title: "Complaint Title",
+        placeholder_summary: "Short summary...",
+        location: "Location",
+        placeholder_location: "Street Name / Area...",
+        attachment: "Attachment",
+        comp_desc: "Description (AI will auto-categorize this)",
+        placeholder_desc: "Detailed explanation of the issue...",
+        btn_submit: "Submit To AI Engine"
+    },
+    ta: {
+        login: "உள்நுழைக",
+        join_now: "இப்போதே சேருங்கள்",
+        hero_title: "AI மூலம் குடிமக்கள் அதிகாரமளித்தல்",
+        hero_subtitle: "புகார்களைச் சமர்ப்பிக்கவும், நிகழ்நேரத்தில் தீர்வுகளைக் கண்காணிக்கவும், மேலும் வகைப்படுத்துதல் மற்றும் முன்னுரிமை அளிப்பதை எங்கள் AI கையாளட்டும்.",
+        file_complaint: "புகார் அளிக்கவும்",
+        lodge_complaint: "புதிய புகாரைப் பதிவு செய்யவும்",
+        comp_title: "புகார் தலைப்பு",
+        placeholder_summary: "சுருக்கமான விவரம்...",
+        location: "இடம்",
+        placeholder_location: "தெருப் பெயர் / பகுதி...",
+        attachment: "இணைப்பு",
+        comp_desc: "விளக்கம் (AI இதைப் பிரித்தறியும்)",
+        placeholder_desc: "பிரச்சனை பற்றிய விரிவான விளக்கம்...",
+        btn_submit: "AI இயந்திரத்திடம் சமர்ப்பிக்கவும்"
+    }
+};
+
+const changeLanguage = (lang) => {
+    currentLang = lang;
+    localStorage.setItem('vinu_lang', lang);
+    
+    // Update active state of buttons
+    document.querySelectorAll('.btn-lang').forEach(btn => {
+        btn.classList.toggle('active', btn.innerText.toLowerCase() === lang);
+    });
+
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[lang][key]) {
+            // Keep icons if present
+            const icon = el.querySelector('i');
+            el.innerText = translations[lang][key];
+            if (icon) el.prepend(icon);
+        }
+    });
+
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (translations[lang][key]) {
+            el.placeholder = translations[lang][key];
+        }
+    });
+};
 
 // --- UI Helpers ---
 const $ = (id) => document.getElementById(id);
@@ -96,6 +159,7 @@ const switchView = (view) => {
 
 // --- App Initialization ---
 const initApp = () => {
+    changeLanguage(currentLang);
     const userString = localStorage.getItem('vinu_user');
     if (!userString) {
         $('landing-page').style.display = 'block';
@@ -118,6 +182,7 @@ const initApp = () => {
     document.querySelectorAll('.admin-only').forEach(el => el.style.display = currentUser.role === 'admin' ? 'flex' : 'none');
     
     switchView('dashboard');
+    changeLanguage(currentLang);
     fetchNotifications();
     setInterval(fetchNotifications, 10000); // Check every 10s
     setTimeout(hideLoader, 500);

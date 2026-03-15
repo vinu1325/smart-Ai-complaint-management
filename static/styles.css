@@ -589,3 +589,27 @@ td { padding: 1rem; border-bottom: 1px solid var(--glass-border); }
     color: var(--success);
     margin-right: 10px;
 }
+.lang-switch {
+    display: flex;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 4px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-lang {
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    transition: 0.3s;
+}
+
+.btn-lang.active {
+    background: var(--primary);
+    color: white;
+}
