@@ -1,4 +1,4 @@
-const CACHE_NAME = 'vinu-smart-ai-v2';
+const CACHE_NAME = 'vinu-smart-ai-v3';
 const assets = [
   '/',
   '/index.html',

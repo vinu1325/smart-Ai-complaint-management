@@ -175,33 +175,45 @@ const switchView = (view) => {
 
 // --- App Initialization ---
 const initApp = () => {
-    changeLanguage(currentLang);
-    const userString = localStorage.getItem('vinu_user');
-    if (!userString) {
+    try {
+        changeLanguage(currentLang);
+        const userString = localStorage.getItem('vinu_user');
+        if (!userString) {
+            $('landing-page').style.display = 'block';
+            $('auth-page').style.display = 'none';
+            $('main-app').style.display = 'none';
+            return;
+        }
+        
+        currentUser = JSON.parse(userString);
+        if (!currentUser || !currentUser.name) {
+             throw new Error("Invalid user session");
+        }
+
+        $('landing-page').style.display = 'none';
+        $('auth-page').style.display = 'none';
+        $('main-app').style.display = 'flex';
+        $('user-display-name').innerText = currentUser.name;
+        document.querySelector('.avatar').innerText = currentUser.name[0];
+        
+        // Role based UI
+        document.body.className = `${currentUser.role || 'user'}-theme`;
+        document.querySelectorAll('.user-only').forEach(el => el.style.display = currentUser.role === 'user' ? 'flex' : 'none');
+        document.querySelectorAll('.admin-only').forEach(el => el.style.display = currentUser.role === 'admin' ? 'flex' : 'none');
+        
+        switchView('dashboard');
+        changeLanguage(currentLang);
+        fetchNotifications();
+    } catch (err) {
+        console.error("App Init Error:", err);
+        localStorage.removeItem('vinu_user'); // Clear potentially corrupt session
         $('landing-page').style.display = 'block';
         $('auth-page').style.display = 'none';
         $('main-app').style.display = 'none';
-        hideLoader();
-        return;
+    } finally {
+        setTimeout(hideLoader, 500);
+        setInterval(fetchNotifications, 10000); // Check every 10s
     }
-    
-    currentUser = JSON.parse(userString);
-    $('landing-page').style.display = 'none';
-    $('auth-page').style.display = 'none';
-    $('main-app').style.display = 'flex';
-    $('user-display-name').innerText = currentUser.name;
-    document.querySelector('.avatar').innerText = currentUser.name[0];
-    
-    // Role based UI
-    document.body.className = `${currentUser.role}-theme`;
-    document.querySelectorAll('.user-only').forEach(el => el.style.display = currentUser.role === 'user' ? 'flex' : 'none');
-    document.querySelectorAll('.admin-only').forEach(el => el.style.display = currentUser.role === 'admin' ? 'flex' : 'none');
-    
-    switchView('dashboard');
-    changeLanguage(currentLang);
-    fetchNotifications();
-    setInterval(fetchNotifications, 10000); // Check every 10s
-    setTimeout(hideLoader, 500);
 };
 
 // --- Data Methods ---
