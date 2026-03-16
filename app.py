@@ -10,12 +10,18 @@ from bson import ObjectId
 
 app = Flask(__name__, static_folder='static')
 CORS(app)
-app.config['SECRET_KEY'] = 'your_super_secret_key_vinu'
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your_super_secret_key_vinu')
 UPLOAD_FOLDER = 'uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
+print("Connecting to MongoDB...")
 db = get_db()
-init_db() # Ensure DB is seeded on start
+print("Initializing database...")
+try:
+    init_db() # Ensure DB is seeded on start
+    print("Database initialization complete.")
+except Exception as e:
+    print(f"Database initialization failed: {e}")
 
 # --- Utils ---
 def create_notification(user_id, title, message, role=None, dept=None):
@@ -335,4 +341,5 @@ def serve_static(path):
     return send_from_directory('static', path)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
