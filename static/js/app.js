@@ -20,7 +20,15 @@ const translations = {
         attachment: "Attachment",
         comp_desc: "Description (AI will auto-categorize this)",
         placeholder_desc: "Detailed explanation of the issue...",
-        btn_submit: "Submit To AI Engine"
+        btn_submit: "Submit To AI Engine",
+        user_name: "User",
+        mobile: "Mobile",
+        description: "Description",
+        category: "Category",
+        priority: "Priority",
+        sla: "SLA Countdown",
+        status: "Status",
+        action: "Action"
     },
     ta: {
         login: "உள்நுழைக",
@@ -36,7 +44,15 @@ const translations = {
         attachment: "இணைப்பு",
         comp_desc: "விளக்கம் (AI இதைப் பிரித்தறியும்)",
         placeholder_desc: "பிரச்சனை பற்றிய விரிவான விளக்கம்...",
-        btn_submit: "AI இயந்திரத்திடம் சமர்ப்பிக்கவும்"
+        btn_submit: "AI இயந்திரத்திடம் சமர்ப்பிக்கவும்",
+        user_name: "பயனர்",
+        mobile: "கைபேசி எண்",
+        description: "விவரம்",
+        category: "வகை",
+        priority: "முன்னுரிமை",
+        sla: "காலக்கெடு",
+        status: "நிலை",
+        action: "நடவடிக்கை"
     }
 };
 
@@ -224,6 +240,9 @@ const loadDashboardData = async () => {
                 <td>${i + 1}</td>
                 <td>${c.title}</td>
                 <td>${c.category}</td>
+                <td class="admin-officer-only">${c.user_name || 'N/A'}</td>
+                <td class="admin-officer-only">${c.user_phone || 'N/A'}</td>
+                <td class="admin-officer-only" title="${c.description}">${c.description.substring(0, 30)}${c.description.length > 30 ? '...' : ''}</td>
                 <td><span class="badge ${c.priority.toLowerCase()}">${c.priority}</span></td>
                 <td>${formatRemainingTime(c.deadline, c.status, c.created_at, c.updated_at)}</td>
                 <td><span class="status-${c.status.toLowerCase().replace(' ', '-')}">${c.status}</span></td>

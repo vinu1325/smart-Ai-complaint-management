@@ -613,3 +613,8 @@ td { padding: 1rem; border-bottom: 1px solid var(--glass-border); }
     background: var(--primary);
     color: white;
 }
+
+/* Role based visibility */
+.user-theme .admin-officer-only {
+    display: none;
+}

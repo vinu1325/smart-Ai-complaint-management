@@ -145,6 +145,7 @@ def create_complaint(current_user):
     complaint = {
         "user_id": current_user['_id'],
         "user_name": current_user['name'],
+        "user_phone": current_user.get('phone'),
         "title": title,
         "description": description,
         "location": location,
@@ -195,6 +196,11 @@ def get_complaints(current_user):
     for c in complaints:
         c['_id'] = str(c['_id'])
         c['user_id'] = str(c['user_id'])
+        # Backward compatibility for phone numbers
+        if 'user_phone' not in c:
+            user = db.users.find_one({"_id": ObjectId(c['user_id'])})
+            c['user_phone'] = user.get('phone', 'N/A') if user else 'N/A'
+            
     return jsonify(complaints)
 
 @app.route('/complaints/<id>/status', methods=['PATCH'])
