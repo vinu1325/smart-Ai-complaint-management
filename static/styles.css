@@ -324,11 +324,24 @@ h1, h2, h3 { font-family: 'Outfit', sans-serif; }
     display: flex;
     align-items: center;
     gap: 0.8rem;
-    font-size: 1.2rem; /* Reduced to fit long text */
-    font-weight: 700;
+    font-size: 1.4rem;
+    font-weight: 800;
     margin-bottom: 3rem;
-    color: var(--primary);
-    white-space: nowrap; /* Keep on one line */
+    background: linear-gradient(to right, #ff3333, #ffcc00, #ff3333);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    white-space: nowrap;
+    letter-spacing: -0.5px;
+    filter: drop-shadow(0 0 10px rgba(255, 51, 51, 0.3));
+}
+
+.logo i {
+    font-size: 1.8rem;
+    background: inherit;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .nav-links { list-style: none; }
